@@ -9,27 +9,31 @@ namespace M8.PlayMaker {
         public FsmString waypoint;
 
         [RequiredField]
-        [UIHint(UIHint.Variable)]
         [Tooltip("Store the object WaypointData. You can check afterwards for null if it exists.")]
-        public FsmObject toObject;
+        public FsmGameObject wpHolder;
+
+        public FsmEvent onInvalid;
 
         public override void Reset() {
             base.Reset();
 
             waypoint = null;
-            toObject = null;
+            wpHolder = null;
+            onInvalid = null;
         }
 
         // Code that runs on entering the state.
         public override void OnEnter() {
             base.OnEnter();
 
-            WaypointData dat = WaypointManager.instance.CreateWaypointData(waypoint.Value);
+            WaypointData dat = wpHolder.Value.GetComponent<WaypointData>();
 
-            if(dat == null)
+            if(!WaypointManager.instance.SetWaypointData(waypoint.Value, dat)) {
                 LogWarning("Waypoint: " + waypoint + " was not found!");
 
-            toObject.Value = (Object)dat;
+                if(!FsmEvent.IsNullOrEmpty(onInvalid))
+                    Fsm.Event(onInvalid);
+            }
 
             Finish();
         }

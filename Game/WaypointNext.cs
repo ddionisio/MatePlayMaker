@@ -6,9 +6,8 @@ namespace M8.PlayMaker {
     [Tooltip("Move waypoint to the next.")]
     public class WaypointNext : FsmStateAction {
         [RequiredField]
-        [UIHint(UIHint.Variable)]
         [Tooltip("The waypoint data.")]
-        public FsmObject wp;
+        public FsmGameObject wpHolder;
 
         public FsmEvent isDone;
 
@@ -17,7 +16,7 @@ namespace M8.PlayMaker {
         public override void Reset() {
             base.Reset();
 
-            wp = null;
+            wpHolder = null;
             isDone = null;
             loop = false;
         }
@@ -26,8 +25,8 @@ namespace M8.PlayMaker {
         public override void OnEnter() {
             base.OnEnter();
 
-            if(wp.Value != null) {
-                WaypointData wpData = (WaypointData)wp.Value;
+            if(!wpHolder.IsNone) {
+                WaypointData wpData = (WaypointData)wpHolder.Value.GetComponent<WaypointData>();
 
                 if(wpData.curInd >= wpData.waypoints.Count) {
                     if(loop)

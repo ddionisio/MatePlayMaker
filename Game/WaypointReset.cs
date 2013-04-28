@@ -6,22 +6,21 @@ namespace M8.PlayMaker {
     [Tooltip("Reset waypoint to beginning.")]
     public class WaypointReset : FsmStateAction {
         [RequiredField]
-        [UIHint(UIHint.Variable)]
         [Tooltip("The waypoint data.")]
-        public FsmObject wp;
+        public FsmGameObject wpHolder;
 
         public override void Reset() {
             base.Reset();
 
-            wp = null;
+            wpHolder = null;
         }
 
         // Code that runs on entering the state.
         public override void OnEnter() {
             base.OnEnter();
 
-            if(wp.Value != null) {
-                WaypointData wpData = (WaypointData)wp.Value;
+            if(!wpHolder.IsNone) {
+                WaypointData wpData = wpHolder.Value.GetComponent<WaypointData>();
                 wpData.curInd = 0;
             }
 

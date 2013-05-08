@@ -42,11 +42,11 @@ namespace M8.PlayMaker {
             }
         }
 
-        void StateCallback(bool aGlobal, string aName, int newVal) {
+        void StateCallback(bool aGlobal, string aName, SceneState.StateValue newVal) {
             if(global == aGlobal && name.Value == aName) {
-                if(val.Value == newVal)
+                if(val.Value == newVal.ival)
                     Fsm.Event(isEqual);
-                else if(val.Value < newVal)
+                else if(val.Value < newVal.ival)
                     Fsm.Event(isLess);
                 else
                     Fsm.Event(isGreater);

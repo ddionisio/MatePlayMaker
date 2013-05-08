@@ -40,10 +40,10 @@ namespace M8.PlayMaker {
             }
         }
 
-        void StateCallback(bool aGlobal, string aName, int newVal) {
+        void StateCallback(bool aGlobal, string aName, SceneState.StateValue newVal) {
             if(global == aGlobal && name.Value == aName) {
                 int mask = 1 << bit.Value;
-                if((newVal & mask) != 0)
+                if((newVal.ival & mask) == mask)
                     Fsm.Event(isTrue);
                 else
                     Fsm.Event(isFalse);

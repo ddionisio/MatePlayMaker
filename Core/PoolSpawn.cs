@@ -15,6 +15,8 @@ namespace M8.PlayMaker {
 
         public FsmGameObject parent;
 
+        public FsmVector3 position;
+
         [UIHint(UIHint.Variable)]
         public FsmGameObject toGameObject;
 
@@ -26,6 +28,7 @@ namespace M8.PlayMaker {
             name = null;
 
             parent = null;
+            position = null;
             toGameObject = null;
         }
 
@@ -35,6 +38,10 @@ namespace M8.PlayMaker {
             Debug.LogError("Not implemented!");
 #else
             Transform t = PoolController.Spawn(group.Value, type.Value, name.IsNone ? type.Value : name.Value, parent.Value == null ? null : parent.Value.transform, null);
+
+            if(!position.IsNone) {
+                t.position = position.Value;
+            }
 #endif
             if(t != null) {
                 if(!toGameObject.IsNone)

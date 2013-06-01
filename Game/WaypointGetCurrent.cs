@@ -30,6 +30,8 @@ namespace M8.PlayMaker {
             if(!wpHolder.IsNone) {
                 WaypointData wpData = wpHolder.Value.GetComponent<WaypointData>();
 
+                Debug.Log("Waypoint: " + wpData.waypoint + " index: " + wpData.curInd);
+
                 if(!toVector.IsNone)
                     toVector.Value = wpData.waypoints[wpData.curInd].position;
 

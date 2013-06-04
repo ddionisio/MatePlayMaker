@@ -38,14 +38,13 @@ namespace M8.PlayMaker {
             Debug.LogError("Not implemented!");
 #else
             Transform t = PoolController.Spawn(group.Value, type.Value, name.IsNone ? type.Value : name.Value, parent.Value == null ? null : parent.Value.transform, null);
-
-            if(!position.IsNone) {
-                t.position = position.Value;
-            }
 #endif
             if(t != null) {
                 if(!toGameObject.IsNone)
                     toGameObject.Value = t.gameObject;
+                else if(!position.IsNone) {
+                    t.position = position.Value;
+                }
             }
             else {
                 Debug.LogWarning("Unable to spawn: " + type.Value + " group: " + group.Value);

@@ -19,7 +19,6 @@ namespace M8.PlayMaker {
         [Tooltip("The event to set to after a choice is selected, or after click on dialog")]
         public FsmEvent actionEvent;
 
-
         public FsmString name;
         
         [RequiredField]
@@ -27,7 +26,7 @@ namespace M8.PlayMaker {
                 
         public FsmString portrait;
 
-        [Tooltip("comma separate choices")]
+        [Tooltip("comma separate choices, e.g.: \"choice1, choice2\"")]
         public FsmString choices;
 
         [UIHint(UIHint.Variable)]
@@ -58,6 +57,10 @@ namespace M8.PlayMaker {
             actionEvent = null;
         }
 
+        string GetModalRef() {
+            return modalRef.IsNone ? UIModalCharacterDialog.defaultModalRef : modalRef.Value;
+        }
+
 	    // Code that runs on entering the state.
 	    public override void OnEnter()
 	    {
@@ -75,12 +78,15 @@ namespace M8.PlayMaker {
                 }
             }
 
-            UIModalCharacterDialog dlg = UIModalCharacterDialog.Open(
-                modalRef.IsNone ? UIModalCharacterDialog.defaultModalRef : modalRef.Value, 
-                text.Value, 
-                name.Value, 
-                portrait.Value, 
-                choiceSepsFilter.ToArray());
+            UIModalCharacterDialog dlg;
+
+            dlg = UIModalCharacterDialog.Open(
+                    isLocalize.Value,
+                    GetModalRef(),
+                    text.Value,
+                    name.Value,
+                    portrait.Value,
+                    choiceSepsFilter != null ? choiceSepsFilter.ToArray() : null);
 
             if(dlg != null) {
                 dlg.actionCallback += OnAction;
@@ -99,11 +105,13 @@ namespace M8.PlayMaker {
 	    // Code that runs when exiting the state.
 	    public override void OnExit()
 	    {
-            UIModalCharacterDialog dlg = UIModalManager.instance.ModalGetController<UIModalCharacterDialog>(
-                modalRef.IsNone ? UIModalCharacterDialog.defaultModalRef : modalRef.Value);
+            if(UIModalManager.instance != null) {
+                UIModalCharacterDialog dlg = UIModalManager.instance.ModalGetController<UIModalCharacterDialog>(
+                    GetModalRef());
 
-            if(dlg != null) {
-                dlg.actionCallback -= OnAction;
+                if(dlg != null) {
+                    dlg.actionCallback -= OnAction;
+                }
             }
 	    }
 
@@ -126,7 +134,7 @@ namespace M8.PlayMaker {
             }
 
             //close?
-            if(closeOnAction.Value && UIModalManager.instance.ModalGetTop() == modalRef.Value) {
+            if(closeOnAction.Value && UIModalManager.instance.ModalGetTop() == GetModalRef()) {
                 UIModalManager.instance.ModalCloseTop();
             }
 

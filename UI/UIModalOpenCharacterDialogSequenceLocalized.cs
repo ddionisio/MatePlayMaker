@@ -4,14 +4,11 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate UI")]
-    [Tooltip("Opens a character dialog. Will not finish until dialog calls back action.")]
-    public class UIModalOpenCharacterDialog : FsmStateAction
+    [Tooltip("Opens a character dialog. Will not finish until dialog calls back action. This is for localized version. The last text will display the choices.")]
+    public class UIModalOpenCharacterDialogSequenceLocalized : FsmStateAction
     {
         [Tooltip("If empty, will use the default modal reference name")]
         public FsmString modalRef;
-
-        [Tooltip("If name, text, and choices are references to the localizer. default = true")]
-        public FsmBool isLocalize;
 
         [Tooltip("Close the dialog after player selects a choice, or just clicks on the dialog")]
         public FsmBool closeOnAction;
@@ -22,7 +19,13 @@ namespace M8.PlayMaker {
         public FsmString name;
         
         [RequiredField]
-        public FsmString text;
+        public FsmString textPrefix;
+
+        [RequiredField]
+        public FsmInt textIndexStart;
+
+        [RequiredField]
+        public FsmInt textIndexEnd;
                 
         public FsmString portrait;
 
@@ -30,19 +33,24 @@ namespace M8.PlayMaker {
         public FsmInt choiceOutput;
 
         public string[] choices;
+
+        private int mCurIndex = 0;
         
         public override void Reset() {
             base.Reset();
 
             modalRef = null;
             name = null;
-            text = null;
+
+            textPrefix = null;
+            textIndexStart = 0;
+            textIndexEnd = 0;
+
             portrait = null;
             choices = null;
 
             choiceOutput = null;
 
-            isLocalize = true;
             closeOnAction = false;
 
             actionEvent = null;
@@ -52,31 +60,36 @@ namespace M8.PlayMaker {
             return modalRef.IsNone ? UIModalCharacterDialog.defaultModalRef : modalRef.Value;
         }
 
-	    // Code that runs on entering the state.
-	    public override void OnEnter()
-	    {
+        //true = success
+        bool SetDialog(bool addCallback) {
             UIModalCharacterDialog dlg;
 
             dlg = UIModalCharacterDialog.Open(
-                    isLocalize.Value,
+                    true,
                     GetModalRef(),
-                    text.Value,
+                    textPrefix.Value + mCurIndex.ToString(),
                     name.Value,
                     portrait.Value,
-                    choices);
+                    mCurIndex == textIndexEnd.Value ? choices : null);
 
             if(dlg != null) {
-                dlg.actionCallback += OnAction;
+                if(addCallback)
+                    dlg.actionCallback += OnAction;
+
+                return true;
             }
-            else {
+
+            return false;
+        }
+
+	    // Code that runs on entering the state.
+	    public override void OnEnter()
+	    {
+            mCurIndex = textIndexStart.Value;
+
+            if(!SetDialog(true)) {
                 Finish();
             }
-	    }
-
-        // Code that runs every frame.
-        public override void OnUpdate()
-	    {
-		
 	    }
 
 	    // Code that runs when exiting the state.
@@ -93,22 +106,32 @@ namespace M8.PlayMaker {
 	    }
 
         void OnAction(int choiceIndex) {
-            //save to variable
-            if(!choiceOutput.IsNone) {
-                choiceOutput.Value = choiceIndex;
-            }
+            if(mCurIndex == textIndexEnd.Value) {
+                //save to variable
+                if(!choiceOutput.IsNone) {
+                    choiceOutput.Value = choiceIndex;
+                }
 
-            //close?
-            if(closeOnAction.Value && UIModalManager.instance.ModalGetTop() == GetModalRef()) {
-                UIModalManager.instance.ModalCloseTop();
-            }
+                //close?
+                if(closeOnAction.Value && UIModalManager.instance.ModalGetTop() == GetModalRef()) {
+                    UIModalManager.instance.ModalCloseTop();
+                }
 
-            //envoke event
-            if(!FsmEvent.IsNullOrEmpty(actionEvent)) {
-                Fsm.Event(actionEvent);
-            }
+                //envoke event
+                if(!FsmEvent.IsNullOrEmpty(actionEvent)) {
+                    Fsm.Event(actionEvent);
+                }
 
-            Finish();
+                Finish();
+            }
+            else {
+                //go to next
+                mCurIndex++;
+
+                if(!SetDialog(false)) {
+                    Finish();
+                }
+            }
         }
     }
 }

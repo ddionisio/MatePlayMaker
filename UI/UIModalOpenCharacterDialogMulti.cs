@@ -4,8 +4,8 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate UI")]
-    [Tooltip("Opens a character dialog. Will not finish until dialog calls back action.")]
-    public class UIModalOpenCharacterDialog : FsmStateAction
+    [Tooltip("Opens a character dialog with a series of texts, last text will show choices. Will not finish until dialog calls back action.")]
+    public class UIModalOpenCharacterDialogMulti : FsmStateAction
     {
         [Tooltip("If empty, will use the default modal reference name")]
         public FsmString modalRef;
@@ -20,23 +20,23 @@ namespace M8.PlayMaker {
         public FsmEvent actionEvent;
 
         public FsmString name;
-        
-        [RequiredField]
-        public FsmString text;
                 
         public FsmString portrait;
 
         [UIHint(UIHint.Variable)]
         public FsmInt choiceOutput;
 
+        public string[] texts;
         public string[] choices;
+
+        private int mCurIndex;
         
         public override void Reset() {
             base.Reset();
 
             modalRef = null;
             name = null;
-            text = null;
+            texts = null;
             portrait = null;
             choices = null;
 
@@ -52,31 +52,37 @@ namespace M8.PlayMaker {
             return modalRef.IsNone ? UIModalCharacterDialog.defaultModalRef : modalRef.Value;
         }
 
+        //true = success
+        bool SetDialog(bool addCallback) {
+            if(texts != null && texts.Length > 0) {
+                UIModalCharacterDialog dlg;
+
+                dlg = UIModalCharacterDialog.Open(
+                        isLocalize.Value,
+                        GetModalRef(),
+                        texts[mCurIndex],
+                        name.Value,
+                        portrait.Value,
+                        mCurIndex == texts.Length - 1 ? choices : null);
+
+                if(dlg != null) {
+                    if(addCallback)
+                        dlg.actionCallback += OnAction;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
 	    // Code that runs on entering the state.
 	    public override void OnEnter()
 	    {
-            UIModalCharacterDialog dlg;
-
-            dlg = UIModalCharacterDialog.Open(
-                    isLocalize.Value,
-                    GetModalRef(),
-                    text.Value,
-                    name.Value,
-                    portrait.Value,
-                    choices);
-
-            if(dlg != null) {
-                dlg.actionCallback += OnAction;
-            }
-            else {
+            mCurIndex = 0;
+            if(!SetDialog(true)) {
                 Finish();
             }
-	    }
-
-        // Code that runs every frame.
-        public override void OnUpdate()
-	    {
-		
 	    }
 
 	    // Code that runs when exiting the state.
@@ -93,22 +99,29 @@ namespace M8.PlayMaker {
 	    }
 
         void OnAction(int choiceIndex) {
-            //save to variable
-            if(!choiceOutput.IsNone) {
-                choiceOutput.Value = choiceIndex;
-            }
+            if(mCurIndex == texts.Length - 1) {
+                //save to variable
+                if(!choiceOutput.IsNone) {
+                    choiceOutput.Value = choiceIndex;
+                }
 
-            //close?
-            if(closeOnAction.Value && UIModalManager.instance.ModalGetTop() == GetModalRef()) {
-                UIModalManager.instance.ModalCloseTop();
-            }
+                //close?
+                if(closeOnAction.Value && UIModalManager.instance.ModalGetTop() == GetModalRef()) {
+                    UIModalManager.instance.ModalCloseTop();
+                }
 
-            //envoke event
-            if(!FsmEvent.IsNullOrEmpty(actionEvent)) {
-                Fsm.Event(actionEvent);
-            }
+                //envoke event
+                if(!FsmEvent.IsNullOrEmpty(actionEvent)) {
+                    Fsm.Event(actionEvent);
+                }
 
-            Finish();
+                Finish();
+            }
+            else {
+                mCurIndex++;
+                if(!SetDialog(false))
+                    Finish();
+            }
         }
     }
 }

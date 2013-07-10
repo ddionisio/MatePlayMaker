@@ -3,21 +3,22 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Entity")]
-    [Tooltip("Set entity state.")]
-    public class EntitySetState : FSMActionComponentBase<EntityBase> {
+    [Tooltip("Get entity's previous state.")]
+    public class EntityGetStatePrev : FSMActionComponentBase<EntityBase> {
         [RequiredField]
-        public FsmInt state;
+        [UIHint(UIHint.Variable)]
+        public FsmInt output;
 
         public override void Reset() {
             base.Reset();
 
-            state = null;
+            output = null;
         }
 
         public override void OnEnter() {
             base.OnEnter();
 
-            mComp.state = state.Value;
+            output.Value = mComp.prevState;
 
             Finish();
         }

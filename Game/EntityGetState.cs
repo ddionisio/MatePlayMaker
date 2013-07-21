@@ -9,10 +9,13 @@ namespace M8.PlayMaker {
         [UIHint(UIHint.Variable)]
         public FsmInt output;
 
+        public bool everyFrame = false;
+
         public override void Reset() {
             base.Reset();
 
             output = null;
+            everyFrame = false;
         }
 
         public override void OnEnter() {
@@ -20,7 +23,12 @@ namespace M8.PlayMaker {
 
             output.Value = mComp.state;
 
-            Finish();
+            if(!everyFrame)
+                Finish();
+        }
+
+        public override void OnUpdate() {
+            output.Value = mComp.state;
         }
     }
 }

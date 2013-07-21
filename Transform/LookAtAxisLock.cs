@@ -3,8 +3,8 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Transform")]
-    [Tooltip("Set the up vector of game object to target")]
-    public class UpLookAt : FsmStateAction {
+    [Tooltip("Set the forward vector of game object to target with restriction to axis. For now, it is only the up vector.")]
+    public class LookAtAxisLock : FsmStateAction {
         [RequiredField]
         [Tooltip("The GameObject to rorate.")]
         public FsmOwnerDefault gameObject;
@@ -14,11 +14,9 @@ namespace M8.PlayMaker {
 
         [Tooltip("World position to look at, or local offset from Target Object if specified.")]
         public FsmVector3 targetPosition;
-        
-        [Tooltip("Don't rotate vertically.")]
-        public FsmBool lockX;
-        public FsmBool lockY;
-        public FsmBool lockZ;
+
+        [Tooltip("Direction of the forward vector.")]
+        public FsmBool backwards;
 
         [Title("Draw Debug Line")]
         [Tooltip("Draw a debug line from the GameObject to the Target.")]
@@ -34,10 +32,7 @@ namespace M8.PlayMaker {
             gameObject = null;
             targetObject = null;
             targetPosition = new FsmVector3 { UseVariable = true };
-
-            lockX = false;
-            lockY = false;
-            lockZ = false;
+            backwards = false;
 
             debug = false;
             debugLineColor = Color.yellow;
@@ -75,24 +70,13 @@ namespace M8.PlayMaker {
                 lookAtPos = targetPosition.Value;
             }
 
-            if(lockX.Value) {
-                lookAtPos.x = go.transform.position.x;
-            }
-
-            if(lockY.Value) {
-                lookAtPos.y = go.transform.position.y;
-            }
-
-            if(lockZ.Value) {
-                lookAtPos.z = go.transform.position.z;
-            }
-
-            go.transform.up = lookAtPos - go.transform.position;
+            Transform t = go.transform;
+            float angle = M8.MathUtil.AngleForwardAxis(t.worldToLocalMatrix, t.position, backwards.Value ? Vector3.back : Vector3.forward, lookAtPos);
+            t.rotation *= Quaternion.AngleAxis(angle, Vector3.up);
 
             if(debug.Value) {
                 Debug.DrawLine(go.transform.position, lookAtPos, debugLineColor.Value);
             }
         }
-
     }
 }

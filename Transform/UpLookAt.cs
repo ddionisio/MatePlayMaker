@@ -1,7 +1,7 @@
 using UnityEngine;
 using HutongGames.PlayMaker;
 
-namespace M8.PlayMaker {
+namespace M8.PlayMaker.TransformLib {
     [ActionCategory("Mate Transform")]
     [Tooltip("Set the up vector of game object to target")]
     public class UpLookAt : FsmStateAction {

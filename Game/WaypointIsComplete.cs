@@ -4,40 +4,51 @@ using HutongGames.PlayMaker;
 namespace M8.PlayMaker {
     [ActionCategory("Mate Waypoint")]
     [Tooltip("Check if waypoint is done. Use this after WaypointNext")]
-    public class WaypointIsComplete : FsmStateAction {
-        [RequiredField]
-        [Tooltip("The waypoint data.")]
-        public FsmGameObject wpHolder;
+    public class WaypointIsComplete : FSMActionComponentBase<WaypointData> {
+        [UIHint(UIHint.Variable)]
+        public FsmBool result;
 
         public FsmEvent isTrue;
         public FsmEvent isFalse;
 
+        public bool everyFrame;
+
         public override void Reset() {
             base.Reset();
 
-            wpHolder = null;
+            result = null;
             isTrue = null;
             isFalse = null;
+            everyFrame = false;
         }
 
         // Code that runs on entering the state.
         public override void OnEnter() {
             base.OnEnter();
 
-            if(!wpHolder.IsNone) {
-                WaypointData wpData = wpHolder.Value.GetComponent<WaypointData>();
+            DoCheck();
 
-                if(wpData.curInd >= wpData.waypoints.Count)
-                    Fsm.Event(isTrue);
-                else
-                    Fsm.Event(isFalse);
-            }
+            if(!everyFrame)
+                Finish();
+        }
 
-            Finish();
+        public override void OnUpdate() {
+            DoCheck();
+        }
+
+        void DoCheck() {
+            if(!result.IsNone)
+                result = mComp.isDone;
+
+            if(mComp.isDone)
+                Fsm.Event(isTrue);
+            else
+                Fsm.Event(isFalse);
         }
 
         public override string ErrorCheck() {
-            if(FsmEvent.IsNullOrEmpty(isTrue) &&
+            if(everyFrame &&
+                FsmEvent.IsNullOrEmpty(isTrue) &&
                 FsmEvent.IsNullOrEmpty(isFalse))
                 return "Action sends no events!";
             return "";

@@ -1,7 +1,7 @@
 using UnityEngine;
 using HutongGames.PlayMaker;
 
-namespace M8.PlayMaker {
+namespace M8.PlayMaker.TransformLib {
     [ActionCategory("Mate Transform")]
     [Tooltip("Set the forward vector of game object to target with restriction to axis. For now, it is only the up vector.")]
     public class LookAtAxisLock : FsmStateAction {

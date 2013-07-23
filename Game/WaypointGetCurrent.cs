@@ -3,12 +3,8 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Waypoint")]
-    [Tooltip("Get a waypoint from given WaypointData and put it in a Vector2")]
-    public class WaypointGetCurrent : FsmStateAction {
-        [RequiredField]
-        [Tooltip("The waypoint data.")]
-        public FsmGameObject wpHolder;
-
+    [Tooltip("Get a waypoint from WaypointData and put it in a Vector/GameObject")]
+    public class WaypointGetCurrent : FSMActionComponentBase<WaypointData> {
         [UIHint(UIHint.Variable)]
         public FsmVector3 toVector;
 
@@ -18,7 +14,6 @@ namespace M8.PlayMaker {
         public override void Reset() {
             base.Reset();
 
-            wpHolder = null;
             toVector = null;
             toGO = null;
         }
@@ -27,17 +22,13 @@ namespace M8.PlayMaker {
         public override void OnEnter() {
             base.OnEnter();
 
-            if(!wpHolder.IsNone) {
-                WaypointData wpData = wpHolder.Value.GetComponent<WaypointData>();
+            //Debug.Log("Waypoint: " + mComp.waypoint + " index: " + mComp.curInd);
 
-                Debug.Log("Waypoint: " + wpData.waypoint + " index: " + wpData.curInd);
+            if(!toVector.IsNone)
+                toVector.Value = mComp.current.position;
 
-                if(!toVector.IsNone)
-                    toVector.Value = wpData.waypoints[wpData.curInd].position;
-
-                if(!toGO.IsNone)
-                    toGO.Value = wpData.waypoints[wpData.curInd].gameObject;
-            }
+            if(!toGO.IsNone)
+                toGO.Value = mComp.current.gameObject;
 
             Finish();
         }

@@ -3,14 +3,10 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Waypoint")]
-    [Tooltip("Get a waypoint from the waypoint manager and stuff it in an FsmObject. Do this sparingly, ie. on start or cache the ones you need.")]
-    public class WaypointGetByName : FsmStateAction {
+    [Tooltip("Get a waypoint from the waypoint manager and set the WaypointData. Do this sparingly, ie. on start or cache the ones you need.")]
+    public class WaypointGetByName : FSMActionComponentBase<WaypointData> {
         [RequiredField]
         public FsmString waypoint;
-
-        [RequiredField]
-        [Tooltip("Store the object WaypointData. You can check afterwards for null if it exists.")]
-        public FsmGameObject wpHolder;
 
         public FsmEvent onInvalid;
 
@@ -18,7 +14,6 @@ namespace M8.PlayMaker {
             base.Reset();
 
             waypoint = null;
-            wpHolder = null;
             onInvalid = null;
         }
 
@@ -26,10 +21,8 @@ namespace M8.PlayMaker {
         public override void OnEnter() {
             base.OnEnter();
 
-            WaypointData dat = wpHolder.Value.GetComponent<WaypointData>();
-
-            if(!WaypointManager.instance.SetWaypointData(waypoint.Value, dat)) {
-                LogWarning("Waypoint: " + waypoint + " was not found!");
+            if(!mComp.Apply(waypoint.Value)) {
+                LogWarning("Waypoint: " + waypoint.Value + " was not found!");
 
                 if(!FsmEvent.IsNullOrEmpty(onInvalid))
                     Fsm.Event(onInvalid);

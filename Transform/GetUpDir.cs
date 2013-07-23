@@ -1,7 +1,7 @@
 using UnityEngine;
 using HutongGames.PlayMaker;
 
-namespace M8.PlayMaker {
+namespace M8.PlayMaker.TransformLib {
 	[ActionCategory("Mate Transform")]
 	[Tooltip("Gets the Up dir of a Game Object and stores it in a Vector3 Variable or each Axis in a Float Variable")]
 	public class GetUpDir : FsmStateAction

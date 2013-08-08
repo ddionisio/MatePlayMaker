@@ -3,39 +3,34 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Scene")]
-    [Tooltip("Set the value to variable as either float or integer.  Only one or the other, not both!")]
-    public class SceneValueSet : FsmStateAction {
+    [Tooltip("This is for use with SceneSerializer. Set the value to variable as either float or integer.  Only one or the other, not both!")]
+    public class SceneObjectValueSet : FSMActionComponentBase<SceneSerializer> {
         [RequiredField]
         public FsmString name;
 
-        public bool global;
-                
         public FsmInt iVal;
         public FsmInt fVal;
 
         public FsmBool persistent;
 
         public override void Reset() {
+            base.Reset();
+
             name = null;
-            global = false;
             iVal = null;
             fVal = null;
             persistent = false;
         }
 
         public override void OnEnter() {
+            base.OnEnter();
+
             if(SceneState.instance != null) {
                 if(!iVal.IsNone) {
-                    if(global)
-                        SceneState.instance.SetGlobalValue(name.Value, iVal.Value, persistent.Value);
-                    else
-                        SceneState.instance.SetValue(name.Value, iVal.Value, persistent.Value);
+                    mComp.SetValue(name.Value, iVal.Value, persistent.Value);
                 }
                 else if(!fVal.IsNone) {
-                    if(global)
-                        SceneState.instance.SetGlobalValueFloat(name.Value, fVal.Value, persistent.Value);
-                    else
-                        SceneState.instance.SetValueFloat(name.Value, fVal.Value, persistent.Value);
+                    mComp.SetValueFloat(name.Value, fVal.Value, persistent.Value);
                 }
             }
 

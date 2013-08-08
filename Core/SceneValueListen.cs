@@ -9,22 +9,22 @@ namespace M8.PlayMaker {
 
         public bool global;
 
-        [RequiredField]
-        public FsmInt val;
+        [UIHint(UIHint.Variable)]
+        public FsmInt iValueOut;
 
-        public FsmEvent isEqual;
-        public FsmEvent isLess;
-        public FsmEvent isGreater;
+        [UIHint(UIHint.Variable)]
+        public FsmFloat fValueOut;
+
+        public FsmEvent changeEvent;
 
         public override void Reset() {
             name = null;
             global = false;
 
-            val = null;
+            iValueOut = null;
+            fValueOut = null;
 
-            isEqual = null;
-            isLess = null;
-            isGreater = null;
+            changeEvent = null;
         }
 
         public override void OnEnter() {
@@ -44,21 +44,17 @@ namespace M8.PlayMaker {
 
         void StateCallback(bool aGlobal, string aName, SceneState.StateValue newVal) {
             if(global == aGlobal && name.Value == aName) {
-                if(val.Value == newVal.ival)
-                    Fsm.Event(isEqual);
-                else if(val.Value < newVal.ival)
-                    Fsm.Event(isLess);
-                else
-                    Fsm.Event(isGreater);
-            }
-        }
+                if(!iValueOut.IsNone)
+                    iValueOut = newVal.ival;
 
-        public override string ErrorCheck() {
-            if(FsmEvent.IsNullOrEmpty(isEqual) &&
-                FsmEvent.IsNullOrEmpty(isGreater) &&
-                FsmEvent.IsNullOrEmpty(isLess))
-                return "Action sends no events!";
-            return "";
+                if(!fValueOut.IsNone)
+                    fValueOut = newVal.fval;
+
+                if(!FsmEvent.IsNullOrEmpty(changeEvent))
+                    Fsm.Event(changeEvent);
+
+                Finish();
+            }
         }
     }
 }

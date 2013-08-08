@@ -3,11 +3,10 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Scene")]
-    public class SceneFlagCheck : FsmStateAction {
+    [Tooltip("This is for use with SceneSerializer")]
+    public class SceneObjectFlagCheck : FSMActionComponentBase<SceneSerializer> {
         [RequiredField]
         public FsmString name;
-
-        public bool global;
 
         [RequiredField]
         public FsmInt bit;
@@ -18,6 +17,8 @@ namespace M8.PlayMaker {
         public bool everyFrame;
 
         public override void Reset() {
+            base.Reset();
+
             name = null;
             bit = null;
             isTrue = null;
@@ -26,14 +27,11 @@ namespace M8.PlayMaker {
         }
 
         public override void OnEnter() {
-            if(SceneState.instance != null) {
-                DoCheck();
-                if(!everyFrame)
-                    Finish();
-            }
-            else {
+            base.OnEnter();
+
+            DoCheck();
+            if(!everyFrame)
                 Finish();
-            }
         }
 
         public override void OnUpdate() {
@@ -41,16 +39,11 @@ namespace M8.PlayMaker {
         }
 
         void DoCheck() {
-            if(SceneState.instance != null) {
-                if(global ? SceneState.instance.CheckGlobalFlag(name.Value, bit.Value) : SceneState.instance.CheckFlag(name.Value, bit.Value)) {
-                    Fsm.Event(isTrue);
-                }
-                else {
-                    Fsm.Event(isFalse);
-                }
+            if(mComp.CheckFlag(name.Value, bit.Value)) {
+                Fsm.Event(isTrue);
             }
             else {
-                Finish();
+                Fsm.Event(isFalse);
             }
         }
 

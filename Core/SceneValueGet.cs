@@ -11,20 +11,30 @@ namespace M8.PlayMaker {
 
         [RequiredField]
         [UIHint(UIHint.Variable)]
-        public FsmInt toValue;
+        public FsmVar toValue;
+
+        public bool everyFrame;
 
         public override void Reset() {
             name = null;
             global = false;
             toValue = null;
+            everyFrame = false;
         }
 
         public override void OnEnter() {
             if(SceneState.instance != null) {
-                toValue.Value = global ? SceneState.instance.GetGlobalValue(name.Value) : SceneState.instance.GetValue(name.Value);
+                toValue.intValue = global ? SceneState.instance.GetGlobalValue(name.Value) : SceneState.instance.GetValue(name.Value);
+                toValue.floatValue = global ? SceneState.instance.GetGlobalValueFloat(name.Value) : SceneState.instance.GetValueFloat(name.Value);
             }
 
-            Finish();
+            if(!everyFrame)
+                Finish();
+        }
+
+        public override void OnUpdate() {
+            toValue.intValue = global ? SceneState.instance.GetGlobalValue(name.Value) : SceneState.instance.GetValue(name.Value);
+            toValue.floatValue = global ? SceneState.instance.GetGlobalValueFloat(name.Value) : SceneState.instance.GetValueFloat(name.Value);
         }
     }
 }

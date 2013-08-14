@@ -3,9 +3,8 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Pool")]
-    [Tooltip("Release given game object")]
+    [Tooltip("Release given game object. If group is None, PoolController will determine what group this game object belongs to.")]
     public class PoolRelease : FsmStateAction {
-        [RequiredField]
         public FsmString group;
 
         [RequiredField]
@@ -23,7 +22,10 @@ namespace M8.PlayMaker {
 #if POOLMANAGER
             Debug.LogError("Not implemented!");
 #else
-            PoolController.Release(group.Value, gameObject.Value.transform);
+            if(!group.IsNone)
+                PoolController.ReleaseByGroup(group.Value, gameObject.Value.transform);
+            else
+                PoolController.ReleaseAuto(gameObject.Value.transform);
 #endif
             Finish();
         }

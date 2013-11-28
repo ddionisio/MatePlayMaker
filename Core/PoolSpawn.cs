@@ -42,7 +42,8 @@ namespace M8.PlayMaker {
             if(t != null) {
                 if(!toGameObject.IsNone)
                     toGameObject.Value = t.gameObject;
-                else if(!position.IsNone) {
+
+                if(!position.IsNone) {
                     t.position = position.Value;
                 }
             }

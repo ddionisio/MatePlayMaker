@@ -16,7 +16,7 @@ namespace M8.PlayMaker {
 
         public override void Reset() {
             music = null;
-            immediate.Value = true;
+            immediate = true;
             wait = null;
             onFinishEvent = null;
         }

@@ -24,8 +24,10 @@ namespace M8.PlayMaker {
 
         public override void OnEnter() {
             if(SceneState.instance != null) {
-                toValue.intValue = global ? SceneState.instance.GetGlobalValue(name.Value) : SceneState.instance.GetValue(name.Value);
-                toValue.floatValue = global ? SceneState.instance.GetGlobalValueFloat(name.Value) : SceneState.instance.GetValueFloat(name.Value);
+                if(toValue.Type == VariableType.Int)
+                    toValue.SetValue(global ? SceneState.instance.GetGlobalValue(name.Value) : SceneState.instance.GetValue(name.Value));
+                else if(toValue.Type == VariableType.Float)
+                    toValue.SetValue(global ? SceneState.instance.GetGlobalValueFloat(name.Value) : SceneState.instance.GetValueFloat(name.Value));
             }
 
             if(!everyFrame)
@@ -33,8 +35,10 @@ namespace M8.PlayMaker {
         }
 
         public override void OnUpdate() {
-            toValue.intValue = global ? SceneState.instance.GetGlobalValue(name.Value) : SceneState.instance.GetValue(name.Value);
-            toValue.floatValue = global ? SceneState.instance.GetGlobalValueFloat(name.Value) : SceneState.instance.GetValueFloat(name.Value);
+            if(toValue.Type == VariableType.Int)
+                toValue.SetValue(global ? SceneState.instance.GetGlobalValue(name.Value) : SceneState.instance.GetValue(name.Value));
+            else if(toValue.Type == VariableType.Float)
+                toValue.SetValue(global ? SceneState.instance.GetGlobalValueFloat(name.Value) : SceneState.instance.GetValueFloat(name.Value));
         }
     }
 }

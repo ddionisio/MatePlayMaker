@@ -18,7 +18,7 @@ namespace M8.PlayMaker {
         
         public override void Reset() {
             name = null;
-            bits = new FsmBool[32];
+            bits = null;
             isTrue = null;
             isFalse = null;
             everyFrame = false;

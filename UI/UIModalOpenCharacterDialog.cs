@@ -92,7 +92,7 @@ namespace M8.PlayMaker {
             }
 	    }
 
-        void OnAction(int choiceIndex) {
+        void OnAction(UIModalCharacterDialog dlg, int choiceIndex) {
             //save to variable
             if(!choiceOutput.IsNone) {
                 choiceOutput.Value = choiceIndex;

@@ -30,7 +30,9 @@ namespace M8.PlayMaker {
         
         public override void OnUpdate() {
             if(!mComp.isPlaying) {
-                Fsm.Event(onEndEvent);
+                if(!FsmEvent.IsNullOrEmpty(onEndEvent))
+                    Fsm.Event(onEndEvent);
+
                 Finish();
             }
         }

@@ -23,12 +23,18 @@ namespace M8.PlayMaker {
 
         // Code that runs on entering the state.
         public override void OnEnter() {
-            MusicManager.instance.Play(music.Value, immediate.Value);
+            if(MusicManager.instance.Exists(music.Value)) {
+                MusicManager.instance.Play(music.Value, immediate.Value);
 
-            if(wait.Value) {
-                MusicManager.instance.musicFinishCallback += OnMusicFinish;
+                if(wait.Value) {
+                    MusicManager.instance.musicFinishCallback += OnMusicFinish;
+                }
+                else {
+                    Finish();
+                }
             }
             else {
+                MusicManager.instance.Stop(true);
                 Finish();
             }
         }

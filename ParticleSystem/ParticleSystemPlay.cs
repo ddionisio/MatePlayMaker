@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Particle System")]
-    [Tooltip("Play the particle")]
+    [HutongGames.PlayMaker.Tooltip("Play the particle")]
     public class ParticleSystemPlay : FSMActionComponentBase<ParticleSystem> {
         public FsmBool withChildren;
 

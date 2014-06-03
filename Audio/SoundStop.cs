@@ -4,7 +4,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Audio")]
-    [Tooltip("Play SoundPlayer.")]
+    [HutongGames.PlayMaker.Tooltip("Play SoundPlayer.")]
     public class SoundStop : FSMActionComponentBase<SoundPlayer> {
 
         public override void OnEnter() {

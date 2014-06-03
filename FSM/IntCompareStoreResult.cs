@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate FSM")]
-    [Tooltip("Similar to IntCompare, but stores result.")]
+    [HutongGames.PlayMaker.Tooltip("Similar to IntCompare, but stores result.")]
     public class IntCompareStoreResult : FsmStateAction {
         [RequiredField]
         public FsmInt
@@ -12,7 +12,7 @@ namespace M8.PlayMaker {
         public FsmInt
             integer2;
 
-        [Tooltip("Value: If Int1 == Int2 then 0, If Int1 > Int2 then 1, If Int1 < Int2 then -1")]
+        [HutongGames.PlayMaker.Tooltip("Value: If Int1 == Int2 then 0, If Int1 > Int2 then 1, If Int1 < Int2 then -1")]
         [UIHint(UIHint.Variable)]
         public FsmInt result;
 

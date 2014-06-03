@@ -3,7 +3,7 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate Particle System")]
-    [Tooltip("Set the loop of the particle")]
+    [HutongGames.PlayMaker.Tooltip("Set the loop of the particle")]
     public class ParticleSystemSetLoop : FSMActionComponentBase<ParticleSystem> {
         public FsmBool loop;
 

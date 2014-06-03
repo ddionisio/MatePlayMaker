@@ -3,15 +3,15 @@ using System.Collections;
 using HutongGames.PlayMaker;
 
 [ActionCategory("Mate GameObject")]
-[Tooltip("Enable/Disable given behaviour type from game object")]
+[HutongGames.PlayMaker.Tooltip("Enable/Disable given behaviour type from game object")]
 public class SetBehaviourEnable : FsmStateAction {
     [RequiredField]
-    [Tooltip("The GameObject that owns the Component.")]
+    [HutongGames.PlayMaker.Tooltip("The GameObject that owns the Component.")]
     public FsmOwnerDefault gameObject;
     
     [RequiredField]
     [UIHint(UIHint.Behaviour)]
-    [Tooltip("The name of the Component to destroy.")]
+    [HutongGames.PlayMaker.Tooltip("The name of the Component to destroy.")]
     public FsmString component;
 
     public FsmBool enable;

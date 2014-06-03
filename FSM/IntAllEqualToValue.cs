@@ -3,24 +3,24 @@ using HutongGames.PlayMaker;
 
 namespace M8.PlayMaker {
     [ActionCategory("Mate FSM")]
-    [Tooltip("Check if all given integers are equal to given value.")]
+    [HutongGames.PlayMaker.Tooltip("Check if all given integers are equal to given value.")]
     public class IntAllEqualToValue : FsmStateAction {
         [RequiredField]
         [UIHint(UIHint.Variable)]
-        [Tooltip("The integer variables to check.")]
+        [HutongGames.PlayMaker.Tooltip("The integer variables to check.")]
         public FsmInt[]
             boolVariables;
-        [Tooltip("The integer value to compare with.")]
+        [HutongGames.PlayMaker.Tooltip("The integer value to compare with.")]
         public FsmInt
             valueCheck;
-        [Tooltip("Event to send if all the integer variables are True.")]
+        [HutongGames.PlayMaker.Tooltip("Event to send if all the integer variables are True.")]
         public FsmEvent
             sendEvent;
         [UIHint(UIHint.Variable)]
-        [Tooltip("Store the result in a Bool variable.")]
+        [HutongGames.PlayMaker.Tooltip("Store the result in a Bool variable.")]
         public FsmBool
             storeResult;
-        [Tooltip("Repeat every frame while the state is active.")]
+        [HutongGames.PlayMaker.Tooltip("Repeat every frame while the state is active.")]
         public bool
             everyFrame;
         

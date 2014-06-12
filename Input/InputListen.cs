@@ -20,12 +20,12 @@ namespace M8.PlayMaker {
 
         // Code that runs on entering the state.
         public override void OnEnter() {
-            Main.instance.input.AddButtonCall(player.Value, action.Value, OnInput);
+            InputManager.instance.AddButtonCall(player.Value, action.Value, OnInput);
             //Finish();
         }
 
         public override void OnExit() {
-            Main.instance.input.RemoveButtonCall(player.Value, action.Value, OnInput);
+            InputManager.instance.RemoveButtonCall(player.Value, action.Value, OnInput);
         }
 
         void OnInput(InputManager.Info data) {

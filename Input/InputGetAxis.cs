@@ -20,7 +20,7 @@ namespace M8.PlayMaker {
 
         // Code that runs on entering the state.
         public override void OnEnter() {
-            toValue.Value = Main.instance.input.GetAxis(player.Value, action.Value);
+            toValue.Value = InputManager.instance.GetAxis(player.Value, action.Value);
 
             Finish();
         }

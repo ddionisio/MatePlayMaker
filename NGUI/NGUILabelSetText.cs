@@ -22,7 +22,7 @@ namespace M8.PlayMaker {
         public override void OnEnter() {
             base.OnEnter();
             
-            mComp.text = isLocalize ? GameLocalize.GetText(text.Value) : text.Value;
+            mComp.text = isLocalize ? GameLocalize.instance.GetText(text.Value) : text.Value;
 
             Finish();
         }

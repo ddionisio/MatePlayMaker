@@ -14,7 +14,7 @@ namespace M8.PlayMaker {
 
         // Code that runs on entering the state.
         public override void OnEnter() {
-            Main.instance.sceneManager.LoadLevel(level.Value);
+            SceneManager.instance.LoadLevel(level.Value);
 
             Finish();
         }

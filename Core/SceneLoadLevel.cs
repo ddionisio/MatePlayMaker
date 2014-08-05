@@ -8,13 +8,24 @@ namespace M8.PlayMaker {
         [RequiredField]
         public FsmInt level;
 
+        [HutongGames.PlayMaker.Tooltip("If true, then override transition effect with transitionOut and transitionIn")]
+        public FsmBool transitionOverride;
+        public FsmString transitionOut;
+        public FsmString transitionIn;
+
         public override void Reset() {
             level = null;
+            transitionOverride = null;
+            transitionOut = null;
+            transitionIn = null;
         }
 
         // Code that runs on entering the state.
         public override void OnEnter() {
-            SceneManager.instance.LoadLevel(level.Value);
+            if(transitionOverride.Value)
+                SceneManager.instance.LoadLevel(level.Value, transitionOut.Value, transitionIn.Value);
+            else
+                SceneManager.instance.LoadLevel(level.Value);
 
             Finish();
         }

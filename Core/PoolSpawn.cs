@@ -37,7 +37,7 @@ namespace M8.PlayMaker {
 #if POOLMANAGER
             Debug.LogError("Not implemented!");
 #else
-            Transform t = PoolController.Spawn(group.Value, type.Value, name.IsNone ? type.Value : name.Value, parent.Value == null ? null : parent.Value.transform, null);
+            Transform t = PoolController.Spawn(group.Value, type.Value, name.IsNone ? type.Value : name.Value, parent.Value == null ? null : parent.Value.transform);
 #endif
             if(t != null) {
                 if(!toGameObject.IsNone)

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
-using HutongGames.PlayMaker;
 
-namespace M8.PlayMaker {
+using M8;
+
+namespace HutongGames.PlayMaker.Actions.M8 {
     [ActionCategory("Mate Audio")]
     public class MusicStop : FsmStateAction {
         public FsmBool fade;

@@ -1,16 +1,21 @@
 ﻿using UnityEngine;
-using System.Collections;
-using HutongGames.PlayMaker;
 
-namespace M8.PlayMaker {
+using M8;
+
+namespace HutongGames.PlayMaker.Actions.M8 {
     [ActionCategory("Mate Audio")]
-    [HutongGames.PlayMaker.Tooltip("Play SoundPlayer.")]
-    public class SoundStop : FSMActionComponentBase<SoundPlayer> {
+    [Tooltip("Play SoundPlayer.")]
+    public class SoundStop : ComponentAction<SoundPlayer> {
+        [RequiredField]
+        [CheckForComponent(typeof(ParticleSystem))]
+        [Tooltip("The GameObject that contains SoundPlayer.")]
+        public FsmOwnerDefault gameObject;
 
         public override void OnEnter() {
-            base.OnEnter();
-            
-            mComp.Stop();
+            var go = Fsm.GetOwnerDefaultTarget(gameObject);
+            if(UpdateCache(go))
+                cachedComponent.Stop();
+
             Finish();
         }
     }

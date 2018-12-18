@@ -1,21 +1,23 @@
 using UnityEngine;
-using HutongGames.PlayMaker;
 
-namespace M8.PlayMaker {
+using M8;
+
+namespace HutongGames.PlayMaker.Actions.M8 {
     [ActionCategory("Mate Audio")]
     public class SoundGlobalPlay : FsmStateAction {
         [RequiredField]
         public FsmString sound;
-
+                
         public FsmBool wait;
 
-        [HutongGames.PlayMaker.Tooltip("If set, wait for sound to end before finishing, then enter event. Make sure to set wait to true")]
-        public FsmEvent onEndEvent;
+        [Tooltip("If set, wait for sound to end before finishing, then enter event.")]
+        [HideIf("IsNotWait")]
+        public FsmEvent waitEndEvent;
 
         public override void Reset() {
             sound = null;
             wait = null;
-            onEndEvent = null;
+            waitEndEvent = null;
         }
 
         // Code that runs on entering the state.
@@ -29,16 +31,14 @@ namespace M8.PlayMaker {
             }
         }
 
-        // Code that runs when exiting the state.
-        public override void OnExit() {
+        void OnSoundEnd(object param) {
+            Fsm.Event(waitEndEvent);
 
+            Finish();
         }
 
-        void OnSoundEnd(object param) {
-            if(!FsmEvent.IsNullOrEmpty(onEndEvent))
-                Fsm.Event(onEndEvent);
-            else
-                Finish();
+        public bool IsNotWait() {
+            return wait.IsNone || !wait.Value;
         }
     }
 }

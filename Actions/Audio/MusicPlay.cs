@@ -1,7 +1,8 @@
 using UnityEngine;
-using HutongGames.PlayMaker;
 
-namespace M8.PlayMaker {
+using M8;
+
+namespace HutongGames.PlayMaker.Actions.M8 {
     [ActionCategory("Mate Audio")]
     public class MusicPlay : FsmStateAction {
         [RequiredField]
@@ -9,16 +10,18 @@ namespace M8.PlayMaker {
 
         public FsmBool immediate;
 
+        [Tooltip("If this is set, this action will wait until music has finished. Make sure the given music is not set to loop!")]
         public FsmBool wait;
 
-        [HutongGames.PlayMaker.Tooltip("The event to call after music ends. Make sure to set wait = true. If this is set, this action will wait until music has finished. Make sure the given music is not set to loop!")]
-        public FsmEvent onFinishEvent;
+        [Tooltip("The event to call after music ends.")]
+        [HideIf("IsNotWait")]
+        public FsmEvent waitFinishEvent;
 
         public override void Reset() {
             music = null;
             immediate = true;
             wait = null;
-            onFinishEvent = null;
+            waitFinishEvent = null;
         }
 
         // Code that runs on entering the state.
@@ -34,27 +37,25 @@ namespace M8.PlayMaker {
                 }
             }
             else {
-                MusicManager.instance.Stop(true);
                 Finish();
             }
         }
 
         // Code that runs when exiting the state.
         public override void OnExit() {
-            if(!FsmEvent.IsNullOrEmpty(onFinishEvent)) {
-                MusicManager.instance.musicFinishCallback -= OnMusicFinish;
-            }
+            MusicManager.instance.musicFinishCallback -= OnMusicFinish;
         }
 
         void OnMusicFinish(string name) {
             if(name == music.Value) {
-                if(!FsmEvent.IsNullOrEmpty(onFinishEvent)) {
-                    Fsm.Event(onFinishEvent);
-                }
-                else {
-                    Finish();
-                }
+                Fsm.Event(waitFinishEvent);
+
+                Finish();
             }
+        }
+
+        public bool IsNotWait() {
+            return wait.IsNone || !wait.Value;
         }
     }
 }

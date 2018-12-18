@@ -1,38 +1,46 @@
 ﻿using UnityEngine;
-using System.Collections;
-using HutongGames.PlayMaker;
 
-namespace M8.PlayMaker {
+using M8;
+
+namespace HutongGames.PlayMaker.Actions.M8 {
     [ActionCategory("Mate Audio")]
-    [HutongGames.PlayMaker.Tooltip("Play SoundPlayer.")]
-    public class SoundPlay : FSMActionComponentBase<SoundPlayer> {
+    [Tooltip("Play SoundPlayer.")]
+    public class SoundPlay : ComponentAction<SoundPlayer> {
+        [RequiredField]
+        [CheckForComponent(typeof(ParticleSystem))]
+        [Tooltip("The GameObject that contains SoundPlayer.")]
+        public FsmOwnerDefault gameObject;
+
         public FsmBool wait;
         
-        [HutongGames.PlayMaker.Tooltip("If set, wait for sound to end before finishing, then enter event. Make sure to set wait to true")]
-        public FsmEvent onEndEvent;
+        [Tooltip("If set, wait for sound to end before finishing, then enter event.")]
+        public FsmEvent waitEndEvent;
         
         public override void Reset() {
-            base.Reset();
-
+            gameObject = null;
             wait = null;
-            onEndEvent = null;
+            waitEndEvent = null;
         }
 
         public override void OnEnter() {
-            base.OnEnter();
+            var go = Fsm.GetOwnerDefaultTarget(gameObject);
+            if(UpdateCache(go)) {
+                cachedComponent.Play();
 
-            mComp.Play();
-
-            if(!wait.Value) {
-                Finish();
+                if(!wait.Value)
+                    Finish();
             }
+            else
+                Finish();
         }
         
         public override void OnUpdate() {
-            if(!mComp.isPlaying) {
-                if(!FsmEvent.IsNullOrEmpty(onEndEvent))
-                    Fsm.Event(onEndEvent);
+            var go = Fsm.GetOwnerDefaultTarget(gameObject);
+            if(!UpdateCache(go))
+                return;
 
+            if(!cachedComponent.isPlaying) {
+                Fsm.Event(waitEndEvent);
                 Finish();
             }
         }

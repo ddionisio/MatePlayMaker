@@ -1,23 +1,27 @@
-using UnityEngine;
-using HutongGames.PlayMaker;
+﻿using UnityEngine;
 
-namespace M8.PlayMaker {
+namespace HutongGames.PlayMaker.Actions.M8 {
     [ActionCategory("Mate Particle System")]
-    [HutongGames.PlayMaker.Tooltip("Set the loop of the particle")]
-    public class ParticleSystemSetLoop : FSMActionComponentBase<ParticleSystem> {
+    [Tooltip("Set the loop of ParticleSystem.")]
+    public class ParticleSystemSetLoop : ComponentAction<ParticleSystem> {
+        [RequiredField]
+        [CheckForComponent(typeof(ParticleSystem))]
+        [Tooltip("The GameObject that contains ParticleSystem.")]
+        public FsmOwnerDefault gameObject;
+
         public FsmBool loop;
 
         public override void Reset() {
-            base.Reset();
-
             loop = false;
         }
 
         // Code that runs on entering the state.
         public override void OnEnter() {
-            base.OnEnter();
-
-            mComp.loop = loop.Value;
+            var go = Fsm.GetOwnerDefaultTarget(gameObject);
+            if(UpdateCache(go)) {
+                var data = cachedComponent.main;
+                data.loop = loop.Value;
+            }
 
             Finish();
         }

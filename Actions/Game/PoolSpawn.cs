@@ -1,5 +1,7 @@
 using UnityEngine;
 
+using M8;
+
 namespace HutongGames.PlayMaker.Actions.M8 {
     [Tooltip("Spawn a game object from pool.")]
     public class PoolSpawn : PoolBase {        
@@ -16,9 +18,15 @@ namespace HutongGames.PlayMaker.Actions.M8 {
         public FsmVector3 spawnPosition;
         [Tooltip("Spawn world euler rotation.")]
         public FsmVector3 spawnRotation;
+        
+        [CompoundArray("Spawn Parameters", "Name", "Object")]
+        public FsmString[] spawnParamNames;
+        public FsmVar[] spawnParamObjects;
 
         [UIHint(UIHint.Variable)]
         public FsmGameObject spawnOutput;
+
+        private GenericParams mSpawnParms = new GenericParams();
 
         public override void Reset() {
             base.Reset();
@@ -38,19 +46,29 @@ namespace HutongGames.PlayMaker.Actions.M8 {
             if(poolCtrl) {
                 string typeName = template != null ? template.GetName() : "";
 
+                //setup name
                 string toName;
                 if(spawnName.IsNone)
                     toName = null;
                 else
                     toName = spawnName.Value;
 
+                //setup parent
                 Transform toParent;
                 if(spawnToParent.IsNone)
                     toParent = null;
                 else
                     toParent = spawnToParent.Value.transform;
 
-                var spawn = poolCtrl.Spawn(typeName, toName, toParent, null);
+                //setup parameters
+                for(int i = 0; i < spawnParamNames.Length; i++) {
+                    var parmName = spawnParamNames[i].Value;
+                    if(!string.IsNullOrEmpty(parmName))
+                        mSpawnParms[parmName] = spawnParamObjects[i].GetValue();
+                }
+
+                //spawn
+                var spawn = poolCtrl.Spawn(typeName, toName, toParent, mSpawnParms);
 
                 if(spawn) {
                     var spawnTrans = spawn.transform;

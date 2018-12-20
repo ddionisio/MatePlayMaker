@@ -37,6 +37,10 @@ namespace HutongGames.PlayMaker.Actions.M8 {
             spawnToParent = new FsmGameObject { UseVariable = true };
             spawnPosition = new FsmVector3 { UseVariable = true };
             spawnRotation = new FsmVector3 { UseVariable = true };
+
+            spawnParamNames = new FsmString[0];
+            spawnParamObjects = new FsmVar[0];
+
             spawnOutput = null;
         }
 

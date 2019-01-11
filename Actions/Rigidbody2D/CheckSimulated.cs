@@ -1,9 +1,14 @@
-﻿using M8;
+﻿using UnityEngine;
 
-namespace HutongGames.PlayMaker.Actions.M8 {
-    [ActionCategory("Mate Scene")]
-    [Tooltip("Check if a scene is loading.")]
-    public class SceneCheckLoading : FsmStateAction {
+namespace HutongGames.PlayMaker.Actions.M8._Rigidbody2D {
+    [ActionCategory("Mate Rigidbody2D")]
+    [Tooltip("Check Rigidbody2D.simulated")]
+    public class CheckSimulated : ComponentAction<Rigidbody2D> {
+        [RequiredField]
+        [CheckForComponent(typeof(Rigidbody2D))]
+        [Tooltip("The Rigidbody2D source.")]
+        public FsmOwnerDefault gameObject;
+
         [UIHint(UIHint.Variable)]
         public FsmBool storeResult;
 
@@ -13,6 +18,8 @@ namespace HutongGames.PlayMaker.Actions.M8 {
         public FsmBool everyFrame;
 
         public override void Reset() {
+            gameObject = null;
+
             storeResult = null;
             isTrue = null;
             isFalse = null;
@@ -20,7 +27,6 @@ namespace HutongGames.PlayMaker.Actions.M8 {
             everyFrame = false;
         }
 
-        // Code that runs on entering the state.
         public override void OnEnter() {
             DoCheck();
 
@@ -33,11 +39,15 @@ namespace HutongGames.PlayMaker.Actions.M8 {
         }
 
         void DoCheck() {
-            var isLoading = SceneManager.instance.isLoading;
+            var go = Fsm.GetOwnerDefaultTarget(gameObject);
+            if(!UpdateCache(go))
+                return;
 
-            storeResult = isLoading;
+            var isSimulated = cachedComponent.simulated;
 
-            Fsm.Event(isLoading ? isTrue : isFalse);
+            storeResult = isSimulated;
+
+            Fsm.Event(isSimulated ? isTrue : isFalse);
         }
 
         public override string ErrorCheck() {

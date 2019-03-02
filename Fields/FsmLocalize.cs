@@ -9,8 +9,7 @@ namespace HutongGames.PlayMaker.Actions.M8 {
     public class FsmLocalize {
         public enum FromType {
             Localize,
-            StringRef,
-            String
+            StringRef
         }
 
         public FromType from = FromType.Localize;
@@ -18,7 +17,7 @@ namespace HutongGames.PlayMaker.Actions.M8 {
 
         public string GetString() {
             switch(from) {
-                case FromType.String:
+                case FromType.StringRef:
                     return stringRef.Value;
                 default:
                     return Localize.Get(stringRef.Value);

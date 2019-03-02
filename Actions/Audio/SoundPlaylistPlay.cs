@@ -4,9 +4,9 @@ using M8;
 
 namespace HutongGames.PlayMaker.Actions.M8 {
     [ActionCategory("Mate Audio")]
-    public class SoundGlobalPlay : FsmStateAction {
+    public class SoundPlaylistPlay : FsmStateAction {
         [RequiredField]
-        public FsmString sound;
+        public FsmSoundPlaylistName sound;
                 
         public FsmBool wait;
 
@@ -14,27 +14,33 @@ namespace HutongGames.PlayMaker.Actions.M8 {
         [HideIf("IsNotWait")]
         public FsmEvent waitEndEvent;
 
+        private AudioSourceProxy mSource;
+
         public override void Reset() {
             sound = null;
             wait = null;
             waitEndEvent = null;
+
+            mSource = null;
         }
 
         // Code that runs on entering the state.
         public override void OnEnter() {
-            if(wait.Value)
-                SoundPlayerGlobal.instance.Play(sound.Value, OnSoundEnd);
-            else {
-                SoundPlayerGlobal.instance.Play(sound.Value);
+            mSource = SoundPlaylist.instance.Play(sound.GetString(), false);
 
+            if(!wait.Value)
+                Finish();
+        }
+
+        public override void OnUpdate() {
+            if(mSource == null || !mSource.isPlaying) {
+                Fsm.Event(waitEndEvent);
                 Finish();
             }
         }
 
-        void OnSoundEnd(object param) {
-            Fsm.Event(waitEndEvent);
-
-            Finish();
+        public override void OnExit() {
+            mSource = null;
         }
 
         public bool IsNotWait() {

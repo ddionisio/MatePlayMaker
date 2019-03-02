@@ -19,11 +19,7 @@ namespace HutongGames.PlayMaker.Actions.M8 {
             switch(fsmMusicPlaylistName.from) {
                 case FsmSoundPlaylistName.FromType.Playlist:
                     if(!mPlaylist) {
-                        //manually grab
-                        var objects = Resources.FindObjectsOfTypeAll<SoundPlaylist>();
-                        if(objects.Length > 0) {
-                            mPlaylist = objects[0];
-                        }
+                        mPlaylist = AssetDatabase.LoadAssetAtPath<SoundPlaylist>(SoundPlaylist.assetPath);
                     }
 
                     if(mPlaylist) {

@@ -15,6 +15,10 @@ namespace HutongGames.PlayMaker.Actions.M8 {
         public FromType from = FromType.Localize;
         public FsmString stringRef = new FsmString();
 
+        public string GetStringRef() {
+            return stringRef.Value;
+        }
+
         public string GetString() {
             switch(from) {
                 case FromType.StringRef:

@@ -10,17 +10,21 @@ namespace HutongGames.PlayMaker.Actions.M8 {
 
         public FsmBool loop;
         public FsmBool immediate;
+        public FsmBool checkPlaying;
 
         public override void Reset() {
             music = null;
             loop = false;
-            immediate = true;
+            immediate = false;
+            checkPlaying = true;
         }
 
         // Code that runs on entering the state.
         public override void OnEnter() {
-            if(MusicPlaylist.instance.Exists(music.GetString())) {
-                MusicPlaylist.instance.Play(music.GetString(), loop.Value, immediate.Value);
+            var musicName = music.GetString();
+            if(MusicPlaylist.instance.Exists(musicName)) {
+                if(!checkPlaying.Value || MusicPlaylist.instance.lastPlayName != musicName)
+                MusicPlaylist.instance.Play(musicName, loop.Value, immediate.Value);
             }
 
             Finish();

@@ -22,7 +22,7 @@ namespace HutongGames.PlayMaker.Actions.M8 {
         // Code that runs on entering the state.
         public override void OnEnter() {
             var musicName = music.GetString();
-            if(MusicPlaylist.instance.Exists(musicName)) {
+            if(!string.IsNullOrEmpty(musicName) && MusicPlaylist.instance.Exists(musicName)) {
                 if(!checkPlaying.Value || MusicPlaylist.instance.lastPlayName != musicName)
                 MusicPlaylist.instance.Play(musicName, loop.Value, immediate.Value);
             }

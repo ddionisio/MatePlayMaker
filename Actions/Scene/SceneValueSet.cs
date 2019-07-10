@@ -25,7 +25,24 @@ namespace HutongGames.PlayMaker.Actions.M8 {
                 var sceneState = global.Value ? SceneState.instance.global : SceneState.instance.local;
                 var isPersist = persistent.Value;
 
+                //TODO: Playmaker garbage, need to grab from NamedVar
+                var val = value.NamedVar;
                 switch(value.Type) {
+                    case VariableType.Int:
+                        sceneState.SetValue(name.Value, val.ToInt(), isPersist);
+                        break;
+                    case VariableType.Float:
+                        sceneState.SetValueFloat(name.Value, val.ToFloat(), isPersist);
+                        break;
+                    case VariableType.String:
+                        sceneState.SetValueString(name.Value, val.ToString(), isPersist);
+                        break;
+                    case VariableType.Bool:
+                        sceneState.SetValue(name.Value, val.ToInt() != 0 ? 1 : 0, isPersist);
+                        break;
+                }
+
+                /*switch(value.Type) {
                     case VariableType.Int:
                         sceneState.SetValue(name.Value, value.intValue, isPersist);
                         break;
@@ -38,7 +55,7 @@ namespace HutongGames.PlayMaker.Actions.M8 {
                     case VariableType.Bool:
                         sceneState.SetValue(name.Value, value.boolValue ? 1 : 0, isPersist);
                         break;
-                }
+                }*/
             }
 
             Finish();

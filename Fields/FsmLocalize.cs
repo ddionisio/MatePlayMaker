@@ -20,12 +20,7 @@ namespace HutongGames.PlayMaker.Actions.M8 {
         }
 
         public string GetString() {
-            switch(from) {
-                case FromType.StringRef:
-                    return stringRef.Value;
-                default:
-                    return Localize.Get(stringRef.Value);
-            }
+            return Localize.Get(stringRef.Value);
         }
     }
 }

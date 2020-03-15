@@ -7,7 +7,7 @@ namespace HutongGames.PlayMaker.Actions.M8 {
     [Tooltip("Play SoundPlayer.")]
     public class SoundStop : ComponentAction<SoundPlayer> {
         [RequiredField]
-        [CheckForComponent(typeof(ParticleSystem))]
+        [CheckForComponent(typeof(SoundPlayer))]
         [Tooltip("The GameObject that contains SoundPlayer.")]
         public FsmOwnerDefault gameObject;
 

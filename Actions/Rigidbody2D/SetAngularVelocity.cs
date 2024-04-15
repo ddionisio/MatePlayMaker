@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 namespace HutongGames.PlayMaker.Actions.M8._Rigidbody2D {
+#if !M8_PHYSICS2D_DISABLED
     [ActionCategory("Mate Rigidbody2D")]
     [Tooltip("Set Rigidbody2D.angularVelocity")]
     public class SetAngularVelocity : ComponentAction<Rigidbody2D> {
@@ -47,4 +48,5 @@ namespace HutongGames.PlayMaker.Actions.M8._Rigidbody2D {
             cachedComponent.angularVelocity = angle.Value;
         }
     }
+#endif
 }

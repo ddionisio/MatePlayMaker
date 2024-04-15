@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 namespace HutongGames.PlayMaker.Actions.M8._Rigidbody2D {
+#if !M8_PHYSICS2D_DISABLED
     [ActionCategory("Mate Rigidbody2D")]
     [Tooltip("Check Rigidbody2D.simulated")]
     public class CheckSimulated : ComponentAction<Rigidbody2D> {
@@ -58,4 +59,5 @@ namespace HutongGames.PlayMaker.Actions.M8._Rigidbody2D {
             return "";
         }
     }
+#endif
 }
